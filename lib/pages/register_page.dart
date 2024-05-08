@@ -20,7 +20,7 @@ class RegisterPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Logo(),
+                  Logo(title: 'Registro',),
                   Form(),
                   Labels(
                     route: 'login',
