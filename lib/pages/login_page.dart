@@ -1,52 +1,37 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:realtime_chat/widgets/custom_button.dart';
+import 'package:realtime_chat/widgets/custom_input_field.dart';
+import 'package:realtime_chat/widgets/labels.dart';
+import 'package:realtime_chat/widgets/logos.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
         backgroundColor: Color(0xffF2F2F2),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Logo(),
-            Form(),
-            Labels(),
-            Text(
-              'Terminos y condiciones de uso',
-              style: TextStyle(fontWeight: FontWeight.w200),
-            )
-          ],
-        ));
-  }
-}
-
-class Logo extends StatelessWidget {
-  const Logo({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: SafeArea(
-        /* para bajar  */
-        child: Container(
-          width: 160,
-          child: Column(
-            children: [
-              Image(image: AssetImage('/tag-logo.png')),
-              SizedBox(
-                height: 20,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.9,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Logo(),
+                  Form(),
+                  Labels(route: 'register',textPrimary: 'No tenes una cuenta?',textSecondary: 'Crea una ahora',),
+                  Text(
+                    'Terminos y condiciones de uso',
+                    style: TextStyle(fontWeight: FontWeight.w200),
+                  )
+                ],
               ),
-              Text(
-                'Messenger',
-                style: TextStyle(fontSize: 30),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 
@@ -60,40 +45,42 @@ class Form extends StatefulWidget {
 class _FormState extends State<Form> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(),
-        TextFormField(),
-        SizedBox(height: 10,),
-        ElevatedButton(onPressed: () {}, child: Text('Ingresar')),
-      ],
-    );
-  }
-}
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
 
-class Labels extends StatelessWidget {
-  const Labels({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          'No tienes cuenta ? ',
-          style: TextStyle(
-              color: Colors.black54, fontSize: 15, fontWeight: FontWeight.w200),
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          'Crea una ahora ',
-          style: TextStyle(
-              color: Colors.blue[600],
-              fontSize: 15,
-              fontWeight: FontWeight.w200),
-        )
-      ],
+    return Container(
+      margin: EdgeInsets.only(top: 50),
+      padding: EdgeInsets.symmetric(horizontal: 40),
+      child: Column(
+        children: [
+          CustomInput(
+            icon: Icons.email_outlined,
+            placeholder: 'Correo',
+            keyboardType: TextInputType.emailAddress,
+            textController: emailController,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          CustomInput(
+            icon: Icons.lock_outline,
+            placeholder: 'Contraseña',
+            keyboardType: TextInputType.visiblePassword,
+            isPassword: true,
+            textController: passwordController,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          CustomButton(
+              onPressed: () {
+                print(emailController.text);
+              },
+              textButton: 'Ingrese',
+              backgroundColor: Colors.blue,
+              textColor: Colors.white)
+        ],
+      ),
     );
   }
 }
