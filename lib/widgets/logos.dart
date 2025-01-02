@@ -13,7 +13,7 @@ class Logo extends StatelessWidget {
           width: 160,
           child: Column(
             children: [
-              Image(image: AssetImage('/tag-logo.png')),
+              Image(image: AssetImage('/logo.jpeg')),
               SizedBox(
                 height: 20,
               ),

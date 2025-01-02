@@ -14,10 +14,10 @@ class RegisterPage extends StatelessWidget {
         backgroundColor: Color(0xffF2F2F2),
         body: SafeArea(
           child: SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Container(
+            physics: const BouncingScrollPhysics(),
+            child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.9,
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Logo(title: 'Registro',),
@@ -59,6 +59,8 @@ class _FormState extends State<Form> {
       child: Column(
         children: [
           CustomInput(
+                          focusNode: FocusNode(),
+
             icon: Icons.perm_identity_outlined,
             placeholder: 'Nombre',
             keyboardType: TextInputType.text,
@@ -68,6 +70,8 @@ class _FormState extends State<Form> {
             height: 10,
           ),
           CustomInput(
+                          focusNode: FocusNode(),
+
             icon: Icons.email_outlined,
             placeholder: 'Correo',
             keyboardType: TextInputType.emailAddress,
@@ -77,6 +81,8 @@ class _FormState extends State<Form> {
             height: 10,
           ),
           CustomInput(
+                          focusNode: FocusNode(),
+
             icon: Icons.lock_outline,
             placeholder: 'Contraseña',
             keyboardType: TextInputType.visiblePassword,

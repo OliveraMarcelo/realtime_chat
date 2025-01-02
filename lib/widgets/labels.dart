@@ -31,7 +31,7 @@ class Labels extends StatelessWidget {
           child: Text(
             textSecondary,
             style: TextStyle(
-                color: Colors.blue[600],
+                color:  Color.fromARGB(255,73, 97, 113),
                 fontSize: 15,
                 fontWeight: FontWeight.w200),
           ),
