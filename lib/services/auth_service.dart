@@ -5,10 +5,16 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:realtime_chat/global/environment.dart';
 import 'package:realtime_chat/models/login_response.dart';
+import 'package:realtime_chat/models/register_response.dart';
 import 'package:realtime_chat/models/user.dart';
 
 class AuthService with ChangeNotifier {
-  Usuario? usuario;
+    Usuario? usuario;
+
+AuthService() {
+    isLoggedIn();
+  }
+
   final storage = const FlutterSecureStorage();
   bool _autenticando = false;
   bool get autenticando => _autenticando;
@@ -18,13 +24,14 @@ class AuthService with ChangeNotifier {
   }
 
   static Future<String> getToken() async {
-    final storage = new FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     final token = await storage.read(key: 'token');
     return token!;
   }
 
   Future<bool> logout() async {
     await storage.delete(key: 'token');
+    autenticando = false;
     return true;
   }
 
@@ -32,29 +39,62 @@ class AuthService with ChangeNotifier {
     await storage.write(key: 'token', value: token);
   }
 
-  //final usuario = ??
   Future<bool> login(String email, String password) async {
     autenticando = true;
     final data = {'email': email, 'password': password};
-    print('${Environment.apiUrl}/login/');
     final resp = await http.post(Uri.parse('${Environment.apiUrl}/login/'),
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
-    // Verificar el código de estado
-    if (resp.statusCode == 200) {
-      // El servidor respondió con éxito
-      print('Login exitoso');
-      print(resp.body);
 
+    if (resp.statusCode == 200) {
       final loginResponse = LoginResponse.fromJson(resp.body);
       usuario = loginResponse.usuario;
       await saveToken(loginResponse.token);
-      print(usuario.toString());
+      
       return true;
-      // Aquí puedes manejar lo que haga falta con la respuesta (guardar token, etc)
     } else {
       autenticando = false;
-      // Hubo un error en la respuesta del servidor
       print('Error en el login. Código de estado: ${resp.statusCode}');
+      print('Cuerpo del error: ${resp.body}');
+      return false;
+    }
+  }
+
+  Future<bool> register(String nombre, String email, String password) async {
+    final data = {'nombre': nombre, 'email': email, 'password': password};
+    final resp = await http.post(Uri.parse('${Environment.apiUrl}/login/new'),
+        body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
+
+    if (resp.statusCode == 200) {
+      final registerResponse = RegisterResponse.fromJson(resp.body);
+      usuario = registerResponse.usuario;
+      await saveToken(registerResponse.token);
+      return true;
+    } else {
+      print('Error en el register. Código de estado: ${resp.statusCode}');
+      print('Cuerpo del error: ${resp.body}');
+      return false;
+    }
+  }
+
+  Future<bool> isLoggedIn() async {
+        print("Cuerpo ");
+
+    final token = await storage.read(key: 'token') ?? '';
+    print(token);
+    if (token.isEmpty) {
+      return false;
+    }
+    final resp = await http.get(Uri.parse('${Environment.apiUrl}/login/renew'),
+        headers: {'Content-Type': 'application/json', 'x-token': token });
+
+    if (resp.statusCode == 200) {
+      final registerResponse = RegisterResponse.fromJson(resp.body);
+      usuario = registerResponse.usuario;
+      await saveToken(registerResponse.token);
+      return true;
+    } else {
+      logout();
+      print('Error en el re new token. Código de estado: ${resp.statusCode}');
       print('Cuerpo del error: ${resp.body}');
       return false;
     }

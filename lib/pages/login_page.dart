@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:realtime_chat/helpers/show_alert.dart';
 import 'package:realtime_chat/services/auth_service.dart';
+import 'package:realtime_chat/services/socket_service.dart';
 import 'package:realtime_chat/widgets/custom_button.dart';
 import 'package:realtime_chat/widgets/labels.dart';
 import 'package:realtime_chat/widgets/logos.dart';
@@ -67,36 +68,10 @@ class _MyCustomFormState extends State<MyCustomForm> {
     super.dispose();
   }
 
-  void _submitForm(AuthService authService) async {
-    if (!formKey.currentState!.validate()) return;
-
-    setState(() => isLoading = true);
-    FocusScope.of(context).unfocus(); // Cierra el teclado
-
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-
-    final success = await authService.login(email, password);
-
-    setState(() => isLoading = false);
-
-    if (success) {
-      // Navegar a la página principal (puedes ajustar esta ruta según tu app)
-      Navigator.pushReplacementNamed(context, 'user');
-    } else {
-      // Mostrar mensaje de error
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Credenciales incorrectas')),
-      );
-    }
-  }
-
-/* final _textFieldEmailKey = GlobalKey<FormFieldState>();
-final _textFieldPasswordKey = GlobalKey<FormFieldState>();
- */
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: const EdgeInsets.only(top: 50),
@@ -109,7 +84,6 @@ final _textFieldPasswordKey = GlobalKey<FormFieldState>();
               child: TextFormField(
                 /*  focusNode: emailFocusNode, */
                 controller: emailController,
-                keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   labelText: 'Correo',
                   prefixIcon: Icon(Icons.email_outlined),
@@ -125,16 +99,13 @@ final _textFieldPasswordKey = GlobalKey<FormFieldState>();
               ),
             ),
             const SizedBox(height: 10),
-            RepaintBoundary(
-              child: TextFormField(
-                /* focusNode: passwordFocusNode, */
-                controller: passwordController,
-                keyboardType: TextInputType.visiblePassword,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Contraseña',
-                  prefixIcon: Icon(Icons.lock_outline),
-                ),
+            TextFormField(
+              /* focusNode: passwordFocusNode, */
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Contraseña',
+                prefixIcon: Icon(Icons.lock_outline),
               ),
             ),
             const SizedBox(height: 20),
@@ -142,15 +113,18 @@ final _textFieldPasswordKey = GlobalKey<FormFieldState>();
               onPressed: authService.autenticando
                   ? null
                   : () async {
-                      print('Ingresando... ${authService.autenticando}');
+                      FocusScope.of(context).unfocus();
+
                       final loginOk = await authService.login(
                           emailController.text, passwordController.text);
                       if (loginOk) {
+                        socketService.connect();
+
                         Navigator.pushReplacementNamed(context, 'user');
-                      }else{
-                        mostrarAlerta(context, 'Login incorrecto', 'Revise sus credenciales');
+                      } else {
+                        mostrarAlerta(context, 'Login incorrecto',
+                            'Revise sus credenciales');
                       }
-                      FocusScope.of(context).unfocus();
                     },
               textButton: 'Ingrese',
               backgroundColor: const Color.fromARGB(255, 73, 97, 113),

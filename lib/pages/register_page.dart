@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:realtime_chat/helpers/show_alert.dart';
+import 'package:realtime_chat/services/auth_service.dart';
 import 'package:realtime_chat/widgets/custom_button.dart';
 import 'package:realtime_chat/widgets/custom_input_field.dart';
 import 'package:realtime_chat/widgets/labels.dart';
@@ -11,7 +14,7 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffF2F2F2),
+        backgroundColor: const Color.fromARGB(255, 239, 190, 150),
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -20,7 +23,9 @@ class RegisterPage extends StatelessWidget {
               child: const Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Logo(title: 'Registro',),
+                  Logo(
+                    title: 'Registro',
+                  ),
                   Form(),
                   Labels(
                     route: 'login',
@@ -49,53 +54,80 @@ class Form extends StatefulWidget {
 class _FormState extends State<Form> {
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
+
     final TextEditingController nameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
 
     return Container(
-      margin: EdgeInsets.only(top: 50),
-      padding: EdgeInsets.symmetric(horizontal: 40),
+      margin: const EdgeInsets.only(top: 50),
+      padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
-          CustomInput(
-                          focusNode: FocusNode(),
-
-            icon: Icons.perm_identity_outlined,
-            placeholder: 'Nombre',
-            keyboardType: TextInputType.text,
-            textController: nameController,
-          ),
-          SizedBox(
+           RepaintBoundary(
+              child: TextFormField(
+                /*  focusNode: emailFocusNode, */
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nombre',
+                  prefixIcon: Icon(Icons.person_outline),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            
+             RepaintBoundary(
+              child: TextFormField(
+                /*  focusNode: emailFocusNode, */
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.person_outline),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            RepaintBoundary(
+              child: TextFormField(
+                /* focusNode: passwordFocusNode, */
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Contraseña',
+                  prefixIcon: Icon(Icons.lock_outline),
+                ),
+              ),
+            ),
+          const SizedBox(
             height: 10,
           ),
-          CustomInput(
-                          focusNode: FocusNode(),
-
-            icon: Icons.email_outlined,
-            placeholder: 'Correo',
-            keyboardType: TextInputType.emailAddress,
-            textController: emailController,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          CustomInput(
-                          focusNode: FocusNode(),
-
+        /*   CustomInput(
             icon: Icons.lock_outline,
             placeholder: 'Contraseña',
             keyboardType: TextInputType.visiblePassword,
             isPassword: true,
             textController: passwordController,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
-          ),
+          ), */
           CustomButton(
-              onPressed: () {
-                print(emailController.text);
-              },
+              onPressed: authService.autenticando
+                  ? null
+                  : () async {
+                      final registerOk = await authService.register(
+                          nameController.text,
+                          emailController.text,
+                          passwordController.text);
+                      if (registerOk) {
+                        Navigator.pushReplacementNamed(context, 'login');
+                      } else {
+                        mostrarAlerta(context, 'Register incorrecto',
+                            'Revise sus credenciales');
+                      }
+                      FocusScope.of(context).unfocus();
+                    },
               textButton: 'Ingrese',
               backgroundColor: Colors.blue,
               textColor: Colors.white)

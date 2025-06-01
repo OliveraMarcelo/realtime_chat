@@ -6,14 +6,12 @@ class CustomInput extends StatelessWidget {
   final TextEditingController textController;
   final TextInputType keyboardType;
   final bool isPassword;
-  final FocusNode focusNode;
 
   const CustomInput({
     Key? key,
     required this.icon,
     required this.placeholder,
     required this.textController,
-    required this.focusNode,
     this.keyboardType = TextInputType.text,
     this.isPassword = false,
   }) : super(key: key);
@@ -36,7 +34,6 @@ class CustomInput extends StatelessWidget {
       ),
       child: TextField(
         controller: textController,
-        focusNode: focusNode, // Agregado el FocusNode
         autocorrect: false,
         keyboardType: keyboardType,
         obscureText: isPassword,
