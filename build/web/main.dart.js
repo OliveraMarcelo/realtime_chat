@@ -84568,7 +84568,7 @@ p.aA()
 o=t.N
 n=A.Y(["email",a,"password",b],o,o)
 s=3
-return A.S(A.aEv(A.e6("http://localhost:3000/api/login/"),B.ah.yw(n,null),A.Y(["Content-Type","application/json"],o,o)),$async$ug)
+return A.S(A.aEv(A.e6("https://realtime-chat-backend-zf7p.onrender.com/api/login/"),B.ah.yw(n,null),A.Y(["Content-Type","application/json"],o,o)),$async$ug)
 case 3:m=d
 o=m.b
 l=m.e
@@ -84605,7 +84605,7 @@ var $async$uI=A.R(function(e,f){if(e===1)return A.N(f,r)
 while(true)switch(s){case 0:l=t.N
 k=A.Y(["nombre",b,"email",c,"password",d],l,l)
 s=3
-return A.S(A.aEv(A.e6("http://localhost:3000/api/login/new"),B.ah.yw(k,null),A.Y(["Content-Type","application/json"],l,l)),$async$uI)
+return A.S(A.aEv(A.e6("https://realtime-chat-backend-zf7p.onrender.com/api/login/new"),B.ah.yw(k,null),A.Y(["Content-Type","application/json"],l,l)),$async$uI)
 case 3:j=f
 l=j.b
 o=j.e
@@ -84640,7 +84640,7 @@ if(o.length===0){q=!1
 s=1
 break}n=t.N
 s=4
-return A.S(A.ax_(A.e6("http://localhost:3000/api/login/renew"),A.Y(["Content-Type","application/json","x-token",o],n,n)),$async$nW)
+return A.S(A.ax_(A.e6("https://realtime-chat-backend-zf7p.onrender.com/api/login/renew"),A.Y(["Content-Type","application/json","x-token",o],n,n)),$async$nW)
 case 4:m=b
 n=m.b
 l=m.e
@@ -84672,7 +84672,7 @@ WA(a){var s=0,r=A.Q(t.z),q,p,o,n,m,l,k,j
 var $async$qy=A.R(function(b,c){if(b===1)return A.N(c,r)
 while(true)switch(s){case 0:p=t.N
 n=A
-m=A.e6("http://localhost:3000/api/mensajes/"+a)
+m=A.e6("https://realtime-chat-backend-zf7p.onrender.com/api/mensajes/"+a)
 l=A
 k="Content-Type"
 j="application/json"
@@ -84767,7 +84767,7 @@ var $async$qH=A.R(function(a,b){if(a===1){o.push(b)
 s=p}while(true)switch(s){case 0:p=4
 k=t.N
 h=A
-g=A.e6("http://localhost:3000/api/usuarios")
+g=A.e6("https://realtime-chat-backend-zf7p.onrender.com/api/usuarios")
 f=A
 e="Content-Type"
 d="application/json"
